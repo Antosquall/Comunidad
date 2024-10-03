@@ -2,30 +2,59 @@ package com.antonio.comunidad.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Usuario {
+@Table(name = "usuarios")
+@Data // Lombok para generar getters y setters automáticamente
+@Getter
+@Setter
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
-    private String email;
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Rol rol;
+    @Column(nullable = false)
+    private boolean enabled;
 
-    @ManyToOne
-    @JoinColumn(name = "vivienda_id")
-    private Vivienda vivienda;
+    // Implementar los métodos de la interfaz UserDetails
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Aquí puedes retornar los roles del usuario.
+        // Por ejemplo, puedes tener una entidad Rol y retornar algo como esto:
+        // return this.roles.stream().map(role -> new SimpleGrantedAuthority(role.getNombre())).collect(Collectors.toList());
+        return new ArrayList<>();
+    }
 
-    public enum Rol {
-        Usuario, Administrador
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
     }
 }
+

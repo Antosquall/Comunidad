@@ -1,34 +1,30 @@
 package com.antonio.comunidad.security;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.function.Function;
 
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app.jwtSecret}")
-    private String jwtSecret;
+    private String jwtSecret = "claveSecretaParaJWT"; // Usa una clave secreta fuerte para producción.
+    private int jwtExpirationMs = 86400000; // 1 día en milisegundos
 
-    @Value("${app.jwtExpirationMs}")
-    private int jwtExpirationMs;
-
-    public String generateToken(Authentication authentication) {
-        String username = authentication.getName();
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-
+    // Generar el token JWT
+    public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)  // <-- Aquí inicializas el algoritmo de firma
                 .compact();
     }
 
-    public String getUsernameFromJWT(String token) {
+    // Obtener el username del token JWT
+    public String getUsernameFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
@@ -36,12 +32,13 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
+    // Validar el token JWT
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
-        } catch (MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
-            // Log exception if necessary
+        } catch (Exception e) {
+            // Manejo de excepciones según sea necesario
             return false;
         }
     }
