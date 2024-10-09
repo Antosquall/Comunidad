@@ -22,6 +22,6 @@ public class Vivienda {
     @JoinColumn(name = "comunidad_id")
     private Comunidad comunidad;
 
-    @OneToMany(mappedBy = "vivienda", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vivienda", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Usuario> usuarios;
 }

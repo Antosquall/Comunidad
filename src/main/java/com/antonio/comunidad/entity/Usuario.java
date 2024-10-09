@@ -26,6 +26,9 @@ public class Usuario implements UserDetails {
     private String password;
 
     @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
     private boolean enabled;
 
     // Implementar los métodos de la interfaz UserDetails
@@ -56,5 +59,9 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return this.enabled;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "vivienda_id")
+    private Vivienda vivienda;  // Propiedad vivienda
 }
 
