@@ -1,3 +1,4 @@
+/*
 package com.antonio.comunidad.utils;
 
 import org.springframework.context.annotation.Bean;
@@ -13,3 +14,4 @@ public class PasswordEncoderUtil {
         return new BCryptPasswordEncoder();
     }
 }
+*/

@@ -16,7 +16,10 @@ public class Vivienda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String direccion;
+    private String bloque;
+    private String piso;
+    private String puerta;
+    private Boolean alquilado;
 
     @ManyToOne
     @JoinColumn(name = "comunidad_id")

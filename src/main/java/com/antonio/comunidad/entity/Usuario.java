@@ -23,6 +23,12 @@ public class Usuario implements UserDetails {
     private String username;
 
     @Column(nullable = false)
+    private String nombre;
+
+    @Column(nullable = false)
+    private String apellido;
+
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
